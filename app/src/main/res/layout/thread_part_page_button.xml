@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="label"
+            type="String"/>
+    </data>
+    <FrameLayout
+        android:foreground="?attr/selectableItemBackground"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <TextView
+            android:textColor="@color/dark_gray_bg"
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"
+            android:paddingLeft="@dimen/small_spacing"
+            android:paddingRight="@dimen/small_spacing"
+            tools:text="5"
+            android:text="@{label}"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </FrameLayout>
+
+</layout>

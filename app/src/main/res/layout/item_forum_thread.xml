@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
+
+
+    <data>
+
+        <import type="android.view.View"/>
+
+        <variable
+            name="forumThread"
+            type="by.yazazzello.forum.client.data.models.ForumThread"/>
+        <variable
+            name="pageClickListener"
+            type="by.yazazzello.forum.client.features.topic.OnPageClickedListener"/>
+    </data>
+
+    <android.support.constraint.ConstraintLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:padding="@dimen/small_half_spacing"
+        >
+
+        <TextView
+            android:id="@+id/forum_thread_title"
+            style="@style/title_text_style"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:text="@{forumThread.title}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.51"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="Title of the topic, maybe long"/>
+
+        <TextView
+            android:id="@+id/thread_last_msg"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="4dp"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="@{forumThread.lastMsgAuthorName}"
+            android:textColor="#707070"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toStartOf="@+id/msgs_count"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/forum_thread_title"
+            tools:text="Forum title some long very very long  so it can be cut"/>
+
+        <TextView
+            android:id="@+id/msgs_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="4dp"
+            android:gravity="right"
+            android:text="@{forumThread.totalMsg}"
+            app:layout_constraintBaseline_toBaselineOf="@+id/thread_last_msg"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="80 123"/>
+
+        <LinearLayout
+            android:id="@+id/pages"
+            android:layout_width="match_parent"
+            android:layout_height="24dp"
+            android:orientation="horizontal"
+            android:visibility="@{forumThread.pages == null ? View.GONE : View.VISIBLE}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/thread_last_msg"
+            app:pages="@{forumThread.pages}"
+            app:listener="@{pageClickListener}"
+            tools:visibility="visible"/>
+
+
+    </android.support.constraint.ConstraintLayout>
+
+</layout>

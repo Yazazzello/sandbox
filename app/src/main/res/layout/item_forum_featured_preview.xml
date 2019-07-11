@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="com.squareup.picasso.Picasso"/>
+
+        <variable
+            name="picasso"
+            type="Picasso"/>
+
+        <variable
+            name="viewModel"
+            type="by.yazazzello.forum.client.data.models.ForumThreadSimple"/>
+    </data>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:foreground="?attr/selectableItemBackground"
+        android:padding="@dimen/small_half_spacing">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="4dp"
+            android:scaleType="centerCrop"
+            app:imageUrl="@{viewModel.imgUrl}"
+            app:layout_constraintDimensionRatio="28:10"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:picasso="@{picasso}"
+            tools:src="@tools:sample/avatars"/>
+
+        <TextView
+            android:id="@+id/textView"
+            style="@style/title_text_style"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="4dp"
+            android:layout_marginStart="8dp"
+            android:lines="3"
+            android:text="@{viewModel.title}"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/imageView"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Title of the topic, maybe long oadfsd sdflsdf "/>
+
+        <TextView
+            android:id="@+id/messages"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="2dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="2dp"
+            android:shadowColor="@color/black"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="2"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:text="@{viewModel.totalMsg}"
+            android:textColor="@color/onliner_yellow"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView"
+            app:layout_constraintEnd_toEndOf="@+id/imageView"
+            app:layout_constraintStart_toStartOf="@+id/imageView"
+            tools:text="@tools:sample/avatars"/>
+
+        <TextView
+            android:id="@+id/previewText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:ellipsize="end"
+            android:maxHeight="500dp"
+            android:text="@{viewModel.previewText}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView"
+            tools:text="@tools:sample/lorem/random"/>
+
+    </android.support.constraint.ConstraintLayout>
+
+</layout>

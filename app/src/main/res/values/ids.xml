@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="msg_post_id" type="id"/>
+    <item name="end_retry_item_id" type="id" />
+</resources>

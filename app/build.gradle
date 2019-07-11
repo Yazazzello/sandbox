@@ -1,0 +1,238 @@
+apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-allopen'
+apply plugin: 'com.jakewharton.hugo'
+apply plugin: 'com.google.firebase.firebase-crash'
+apply plugin: 'com.google.firebase.firebase-perf'
+
+
+def appName = 'ForumOnliner'
+def commitCount = Integer.parseInt('git rev-list HEAD --count'.execute([], project.rootDir).text.trim())
+def gitSha = 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
+def gitCurrentTag = 'git describe --tags --abbrev=0'.execute([], project.rootDir).text.trim()
+
+def message = System.getenv("BITRISE_GIT_BRANCH") + "\n " + System.getenv("BITRISE_GIT_MESSAGE")
+
+android {
+    compileOptions {
+        incremental false
+    }
+
+    final minApi = 21
+    compileSdkVersion 27
+    buildToolsVersion '28.0.0-rc1'
+    
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+
+    dataBinding {
+        enabled = true
+    }
+
+    defaultConfig {
+        applicationId "pl.yazazzello.forumonliner"
+        minSdkVersion minApi
+        targetSdkVersion 27
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        versionCode commitCount
+        versionName "1.0.0-" + versionCode
+        archivesBaseName = appName + "-${versionName}-${gitSha}"
+        vectorDrawables.useSupportLibrary = true
+        multiDexEnabled true
+        resConfigs "en"
+        buildConfigField "String", "GIT_SHA", "\"${gitSha}\""
+    }
+
+    dexOptions {
+        preDexLibraries true
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+        debug {
+            versionNameSuffix " Debug"
+            debuggable true
+            ext.alwaysUpdateBuildId = false
+            aaptOptions.cruncherEnabled = false
+        }
+    }
+
+    flavorDimensions "forum"
+
+    productFlavors {
+        // Define separate dev and prod product flavors.
+        dev {
+            // dev utilizes minSDKVersion = 21 to allow the Android gradle plugin
+            // to pre-dex each module and produce an APK that can be tested on
+            // Android Lollipop without time consuming dex merging processes.
+            dimension "forum"
+            resConfigs "en"
+            ext.betaDistributionGroupAliases="beta"
+            ext.betaDistributionReleaseNotes=message
+        }
+        prod {
+            // The actual minSdkVersion for the application.
+            minSdkVersion minApi
+            dimension "forum"
+        }
+    }
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+
+    lintOptions {
+        lintConfig rootProject.file('gradle/lint.xml')
+        abortOnError false
+        ignoreWarnings false
+        disable 'RtlHardcoded', 'RtlCompat', 'RtlEnabled', 'ContentDescription', 'InvalidPackage'
+    }
+
+    signingConfigs {
+
+        release {
+            storeFile System.getenv("KEYSTORE_FILE") ? file(System.getenv("KEYSTORE_FILE")) : null
+            storePassword System.getenv("KEYSTORE_PASSWORD")
+            keyAlias System.getenv("KEY_ALIAS")
+            keyPassword System.getenv("KEY_PASSWORD")
+        }
+
+        debug {
+            storeFile file("../debug.keystore")
+        }
+    }
+
+    packagingOptions {
+        exclude 'META-INF/rxjava.properties'
+    }
+}
+
+allOpen {
+    annotation("by.yazazzello.forum.client.helpers.TestOpen")
+}
+
+dependencies {
+    final SUPPORT_LIBRARY_VERSION = '27.1.1'
+    final RETROFIT_VERSION = '2.4.0'
+    final DAGGER_VERSION = '2.16'
+    final HAMCREST_VERSION = '1.3'
+    final TICKER_VERSION = '1.2.2'
+    final REQUERY_VERSION = '1.5.0'
+    final REQUERY_SQLITE = '3.22.0'
+    final RX_ANDROID_VERSION = '2.0.2'
+    final RX_JAVA = '2.1.16'
+    final PICASSO_VERSION = '2.5.2'
+    final TIMBER_VERSION = '4.6.1'
+    final JSOUP_VERSION = '1.11.2'
+    final OK_HTTP_VERSION = '3.11.0'
+    final STETHO_VERSION = '1.5.0'
+    final LEAKCANARY_VERSION = '1.5.4'
+    final MOCKITO_KOTLIN_VERSION = '1.4.0'
+    final ANKO_VERSION = '0.10.1'
+    final FIREBASE_VERSION = '16.0.0'
+    final FIREBASE_VERSION_CORE = '16.0.1'
+    final FIREBASE_VERSION_CRASH = '16.0.1'
+    final TRANSITIONS_VERSION = '1.7.8'
+
+    def daggerCompiler = "com.google.dagger:dagger-compiler:$DAGGER_VERSION"
+    def jUnit = "junit:junit:4.12"
+    def mockito = "org.mockito:mockito-core:1.10.19"
+
+    implementation 'com.android.support:multidex:1.0.3'
+    implementation "org.jetbrains.anko:anko-sdk19:$ANKO_VERSION"
+    implementation "org.jetbrains.anko:anko-commons:$ANKO_VERSION"
+
+    implementation "com.andkulikov:transitionseverywhere:$TRANSITIONS_VERSION"
+
+    implementation "com.robinhood.ticker:ticker:$TICKER_VERSION"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    //support
+    implementation "com.android.support:appcompat-v7:$SUPPORT_LIBRARY_VERSION"
+    implementation "com.android.support:recyclerview-v7:$SUPPORT_LIBRARY_VERSION"
+    implementation "com.android.support:cardview-v7:$SUPPORT_LIBRARY_VERSION"
+    implementation "com.android.support:design:$SUPPORT_LIBRARY_VERSION"
+    implementation "com.android.support:support-annotations:$SUPPORT_LIBRARY_VERSION"
+    implementation "com.android.support:support-v4:$SUPPORT_LIBRARY_VERSION"
+    implementation "com.android.support.constraint:constraint-layout:1.1.2"
+
+    implementation "com.squareup.retrofit2:retrofit:$RETROFIT_VERSION"
+    implementation "com.squareup.retrofit2:converter-gson:$RETROFIT_VERSION"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$RETROFIT_VERSION"
+
+    implementation "com.squareup.picasso:picasso:$PICASSO_VERSION"
+
+    implementation "io.reactivex.rxjava2:rxandroid:$RX_ANDROID_VERSION"
+    implementation "io.reactivex.rxjava2:rxjava:$RX_JAVA"
+
+    implementation "com.jakewharton.timber:timber:$TIMBER_VERSION"
+
+    implementation "org.jsoup:jsoup:$JSOUP_VERSION"
+
+    implementation "com.google.dagger:dagger:$DAGGER_VERSION"//Dagger-Android
+    implementation "com.google.dagger:dagger-android:$DAGGER_VERSION"
+    kapt "com.google.dagger:dagger-android-processor:$DAGGER_VERSION"
+    implementation "com.google.dagger:dagger-android-support:$DAGGER_VERSION"
+
+
+    implementation "io.requery:sqlite-android:$REQUERY_SQLITE"
+    implementation "io.requery:requery:$REQUERY_VERSION"
+    implementation "io.requery:requery-android:$REQUERY_VERSION"
+    implementation "io.requery:requery-kotlin:$REQUERY_VERSION"
+    implementation "com.squareup.okhttp3:okhttp:$OK_HTTP_VERSION"
+    //development
+    implementation "com.squareup.okhttp3:logging-interceptor:$OK_HTTP_VERSION"
+    implementation "com.facebook.stetho:stetho:$STETHO_VERSION"
+    implementation "com.facebook.stetho:stetho-okhttp3:$STETHO_VERSION"
+
+    debugImplementation "com.squareup.leakcanary:leakcanary-android:$LEAKCANARY_VERSION"
+    releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$LEAKCANARY_VERSION"
+    testImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$LEAKCANARY_VERSION"
+
+    // Unit tests dependencies
+    testImplementation jUnit
+    testImplementation mockito
+    testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
+    testImplementation "org.hamcrest:hamcrest-core:$HAMCREST_VERSION"
+    testImplementation "org.hamcrest:hamcrest-library:$HAMCREST_VERSION"
+    testImplementation "org.hamcrest:hamcrest-integration:$HAMCREST_VERSION"
+    testImplementation "com.nhaarman:mockito-kotlin:$MOCKITO_KOTLIN_VERSION"
+
+    kapt daggerCompiler
+    kapt "io.requery:requery-processor:$REQUERY_VERSION"
+
+    implementation "com.google.firebase:firebase-crash:$FIREBASE_VERSION_CRASH"
+    implementation "com.google.firebase:firebase-core:$FIREBASE_VERSION_CORE"
+    implementation "com.google.firebase:firebase-perf:$FIREBASE_VERSION"
+    implementation "com.google.firebase:firebase-messaging:17.1.0"
+    implementation('com.crashlytics.sdk.android:crashlytics:2.9.2@aar') {
+        transitive = true
+    }
+    implementation 'androidx.core:core-ktx:0.3'
+    implementation 'com.airbnb.android:lottie:2.5.1'
+
+    configurations.all {
+        resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+            def requested = details.requested
+            if (requested.group == 'com.android.support') {
+                if (!requested.name.startsWith("multidex")) {
+                    details.useVersion SUPPORT_LIBRARY_VERSION
+                }
+            }
+        }
+    }
+}
+
+
+kapt {
+    generateStubs = true
+}
+
+apply plugin: 'com.google.gms.google-services'

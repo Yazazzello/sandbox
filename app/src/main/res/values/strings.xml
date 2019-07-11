@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Onliner Форум</string>
+    <string name="view_loading_retry_label">Повторить</string>
+    <string name="toolbar_main">Форум onliner.by</string>
+    <string name="toolbar_featured">Избранное</string>
+    <string name="toolbar_history">Посещенные</string>
+    <string name="main_subtitle">Главная страница</string>
+    <string name="click_one_more_time_to_exit">Нажмите еще раз, чтобы выйти</string>
+    <string name="menu_featured">Избранное</string>
+    <string name="menu_recent_24">Новое за 24ч</string>
+    <string name="menu_forum">Форум</string>
+    <string name="menu_history">История</string>
+    <string name="toolbar_forum_last24">Новое за 24 часа</string>
+</resources>

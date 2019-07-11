@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="forum"
+            type="by.yazazzello.forum.client.data.models.ForumCategory"/>
+    </data>
+
+    <android.support.constraint.ConstraintLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:padding="@dimen/small_half_spacing"
+        >
+
+        <TextView
+            android:id="@+id/topic_title"
+            style="@style/title_text_style"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="4dp"
+            android:text="@{forum.title}"
+            app:layout_constraintEnd_toStartOf="@+id/forums_count"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Topic title"/>
+
+        <TextView
+            android:id="@+id/forums_count"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:text="@{forum.totalThreads}"
+            android:textStyle="bold"
+            app:layout_constraintBaseline_toBaselineOf="@+id/topic_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="8 123"/>
+
+        <TextView
+            android:id="@+id/topic_description"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="4dp"
+            android:layout_marginTop="4dp"
+            android:ellipsize="marquee"
+            android:singleLine="true"
+            android:text="@{forum.description}"
+            android:textColor="#707070"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toStartOf="@+id/msgs_count"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/topic_title"
+            tools:text="Forum title \n some"/>
+
+        <TextView
+            android:id="@+id/msgs_count"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:text="@{forum.totalMsgs}"
+            app:layout_constraintBaseline_toBaselineOf="@+id/topic_description"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="80 123"/>
+    </android.support.constraint.ConstraintLayout>
+
+</layout>
